@@ -3,6 +3,7 @@ package server;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ClientManager implements Runnable{
     private final Socket socket;
@@ -46,15 +47,46 @@ public class ClientManager implements Runnable{
     }
 
     private void broadcastMessage(String msg){
-        for(ClientManager i: clients){
-            try {
-                if (!i.userName.equals(userName) && !msg.isEmpty()) {
-                    i.bw.write(msg);
-                    i.bw.newLine();
-                    i.bw.flush();
+        String[] arr = msg.split("@");
+        System.out.println("Split" + Arrays.toString(arr));
+        if(arr.length>2){
+            boolean flag = false;
+            String from = arr[1].trim();
+            String to= arr[2].trim();
+            String personalMsg = arr[3].trim();
+            System.out.println(from+"from "+to+" to "+personalMsg+" personalMs ");
+            for(ClientManager i: clients){
+                try {
+                    if (i.userName.equals(to) && !msg.isEmpty()) {
+                        i.bw.write(from+" "+personalMsg);
+                        i.bw.newLine();
+                        i.bw.flush();
+                        flag = true;
+                    }
+                }catch (IOException e){
+                    closeEverything(socket,bw,br);
                 }
-            }catch (IOException e){
-                closeEverything(socket,bw,br);
+            }
+            if(!flag) {
+                try {
+                    this.bw.write("Uncorrected receiver");
+                    this.bw.newLine();
+                    this.bw.flush();
+                } catch (IOException e) {
+                    closeEverything(socket, bw, br);
+                }
+            }
+        }else {
+            for(ClientManager i: clients){
+                try {
+                    if (!i.userName.equals(userName) && !msg.isEmpty()) {
+                        i.bw.write(msg);
+                        i.bw.newLine();
+                        i.bw.flush();
+                    }
+                    }catch (IOException e){
+                        closeEverything(socket,bw,br);
+                    }
             }
         }
     }
