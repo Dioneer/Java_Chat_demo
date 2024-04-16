@@ -15,13 +15,13 @@ public class Program {
             System.out.println("Connet to: "+address+":"+1300);
             Socket socket = new Socket(address, 1300);
             Client client = new Client(socket, name);
-
-
             InetAddress inetAddress = socket.getInetAddress();
             System.out.println("Remote IP: " + inetAddress);
             String remoteIP = inetAddress.getHostAddress();
             System.out.println("Remote IP: " + remoteIP);
             System.out.println("LocalPort: " + socket.getLocalPort());
+            client.listenForMessage();
+            client.sendMessage();
 
         } catch (IOException e) {
             throw new RuntimeException(e);
