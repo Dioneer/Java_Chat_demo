@@ -48,13 +48,11 @@ public class ClientManager implements Runnable{
 
     private void broadcastMessage(String msg){
         String[] arr = msg.split("@");
-        System.out.println("Split" + Arrays.toString(arr));
         if(arr.length>2){
             boolean flag = false;
             String from = arr[1].trim();
             String to= arr[2].trim();
             String personalMsg = arr[3].trim();
-            System.out.println(from+"from "+to+" to "+personalMsg+" personalMs ");
             for(ClientManager i: clients){
                 try {
                     if (i.userName.equals(to) && !msg.isEmpty()) {
