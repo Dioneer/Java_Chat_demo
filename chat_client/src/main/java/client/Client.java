@@ -48,10 +48,11 @@ public class Client {
                     System.out.println(message);
                 } catch (IOException e) {
                     closeEverything(socket,bw,br);
+                    break;
                 }
             }
         }).start();
-
+        System.out.println("Client thread finished");
     }
     private void closeEverything(Socket socket, BufferedWriter bw, BufferedReader br) {
         try {
